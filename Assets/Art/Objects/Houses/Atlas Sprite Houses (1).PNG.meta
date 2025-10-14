@@ -1,0 +1,555 @@
+fileFormatVersion: 2
+guid: 3261bcee257334844b35b575fa52b057
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3237037264779959163
+    second: Atlas Sprite Houses (1)_0
+  - first:
+      213: -5482875758619602776
+    second: Atlas Sprite Houses (1)_1
+  - first:
+      213: -104954082606533131
+    second: Atlas Sprite Houses (1)_2
+  - first:
+      213: -2817553785439992536
+    second: Atlas Sprite Houses (1)_3
+  - first:
+      213: 7089176283644317294
+    second: Atlas Sprite Houses (1)_4
+  - first:
+      213: 5618239734337952767
+    second: Atlas Sprite Houses (1)_5
+  - first:
+      213: -1183860618641977536
+    second: Atlas Sprite Houses (1)_6
+  - first:
+      213: -4235464455760646005
+    second: Atlas Sprite Houses (1)_7
+  - first:
+      213: -6128328571543098572
+    second: Atlas Sprite Houses (1)_8
+  - first:
+      213: 2791124067589604686
+    second: Atlas Sprite Houses (1)_9
+  - first:
+      213: 4662509673973596779
+    second: Atlas Sprite Houses (1)_10
+  - first:
+      213: 8641363399858199326
+    second: Atlas Sprite Houses (1)_11
+  - first:
+      213: 3806644506976042160
+    second: Atlas Sprite Houses (1)_12
+  - first:
+      213: 5746388483912114986
+    second: Atlas Sprite Houses (1)_13
+  - first:
+      213: -1224533858900391082
+    second: Atlas Sprite Houses (1)_14
+  - first:
+      213: -3966374640089642169
+    second: Atlas Sprite Houses (1)_15
+  - first:
+      213: -3361558199370750902
+    second: Atlas Sprite Houses (1)_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_0
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 1361
+        width: 1253
+        height: 1601
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 584a61c12cbb313d0800000000000000
+      internalID: -3237037264779959163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_1
+      rect:
+        serializedVersion: 2
+        x: 1387
+        y: 1369
+        width: 1074
+        height: 819
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a0d0eb0c89e8e3b0800000000000000
+      internalID: -5482875758619602776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_2
+      rect:
+        serializedVersion: 2
+        x: 2426
+        y: 1324
+        width: 1205
+        height: 1459
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f5b28461d02b8ef0800000000000000
+      internalID: -104954082606533131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_3
+      rect:
+        serializedVersion: 2
+        x: 3687
+        y: 1334
+        width: 1205
+        height: 1476
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 825ca4b92c906e8d0800000000000000
+      internalID: -2817553785439992536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_4
+      rect:
+        serializedVersion: 2
+        x: 5057
+        y: 1250
+        width: 1257
+        height: 1522
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6e4eb81540d16260800000000000000
+      internalID: 7089176283644317294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_5
+      rect:
+        serializedVersion: 2
+        x: 6366
+        y: 1248
+        width: 1289
+        height: 1561
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffbd23c854ff7fd40800000000000000
+      internalID: 5618239734337952767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_6
+      rect:
+        serializedVersion: 2
+        x: 7664
+        y: 2040
+        width: 14
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04f454a2a05129fe0800000000000000
+      internalID: -1183860618641977536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_7
+      rect:
+        serializedVersion: 2
+        x: 4926
+        y: 1865
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b80f797948b9835c0800000000000000
+      internalID: -4235464455760646005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_8
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 159
+        width: 1238
+        height: 980
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43beb4a22adc3faa0800000000000000
+      internalID: -6128328571543098572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_9
+      rect:
+        serializedVersion: 2
+        x: 1520
+        y: 648
+        width: 798
+        height: 532
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e45c8bc2d801cb620800000000000000
+      internalID: 2791124067589604686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_10
+      rect:
+        serializedVersion: 2
+        x: 2444
+        y: 510
+        width: 1209
+        height: 660
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b62c40f68df84b040800000000000000
+      internalID: 4662509673973596779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_11
+      rect:
+        serializedVersion: 2
+        x: 3711
+        y: 382
+        width: 1209
+        height: 889
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1b1c9f6a3a4ce770800000000000000
+      internalID: 8641363399858199326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_12
+      rect:
+        serializedVersion: 2
+        x: 5071
+        y: 509
+        width: 1087
+        height: 603
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bcbf78b20be3d430800000000000000
+      internalID: 3806644506976042160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_13
+      rect:
+        serializedVersion: 2
+        x: 6520
+        y: 487
+        width: 1033
+        height: 633
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a232af461e54fbf40800000000000000
+      internalID: 5746388483912114986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_14
+      rect:
+        serializedVersion: 2
+        x: 6860
+        y: 491
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65bcdc471f4910fe0800000000000000
+      internalID: -1224533858900391082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_15
+      rect:
+        serializedVersion: 2
+        x: 4444
+        y: 365
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74bc653974b94f8c0800000000000000
+      internalID: -3966374640089642169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Atlas Sprite Houses (1)_16
+      rect:
+        serializedVersion: 2
+        x: 916
+        y: 156
+        width: 136
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4464b2c0a85951d0800000000000000
+      internalID: -3361558199370750902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

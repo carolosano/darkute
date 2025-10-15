@@ -2,28 +2,16 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int vidaMaxima;
-    [SerializeField] private int vidaActual;
-    private void Awake()
-    {
-        vidaActual = vidaMaxima;
-    }
+    [SerializeField] private float vida = 100f;
 
-    public void TomarDanio(int danio)
+    public void TomarDanio(float danio)
     {
-        int vidaTemporal = vidaActual - danio;
-        vidaTemporal = Mathf.Clamp(vidaTemporal, 0, vidaMaxima);
-        vidaActual = vidaTemporal;
-
-        if (vidaActual <= 0)
+        vida -= danio;
+        Debug.Log("Player recibió daño. Vida restante: " + vida);
+        if (vida <= 0)
         {
-            DestruirJugador();
+            Debug.Log("El jugador murió");
         }
     }
-
-    private void DestruirJugador()
-    {
-        Destroy(gameObject);  
-    } 
-
 }
+

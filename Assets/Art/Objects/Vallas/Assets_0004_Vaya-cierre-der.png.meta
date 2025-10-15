@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Assets_0004_Vaya-cierre-der_0: -1240308867011241818
+      Assets_0004_Vaya-cierre-der_1: -1025102379991660535
+      Assets_0004_Vaya-cierre-der_2: 661339538189877892
+      Assets_0004_Vaya-cierre-der_3: -8156939166982470442
+      Assets_0004_Vaya-cierre-der_4: 431334619536235598
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

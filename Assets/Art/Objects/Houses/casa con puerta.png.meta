@@ -422,7 +422,19 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      casa con puerta_0: 6015304860202529816
+      casa con puerta_1: 8027928623881598962
+      casa con puerta_10: -232050351738511375
+      casa con puerta_11: -1639570481828623855
+      casa con puerta_2: -4986446408603923119
+      casa con puerta_3: 2541308346791696734
+      casa con puerta_4: -8690264060929845106
+      casa con puerta_5: -5933249284874598303
+      casa con puerta_6: -8547860036368878261
+      casa con puerta_7: -8422810180359097058
+      casa con puerta_8: 6264166483921612012
+      casa con puerta_9: -2524410539712802882
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

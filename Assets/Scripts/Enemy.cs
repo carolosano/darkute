@@ -2,28 +2,24 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int maxHealth = 3;
-    private int currentHealth;
+    [SerializeField] private float vida;
+    private Animator animator;
 
-    private void Awake()
+    private void Start()
     {
-        currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
     }
 
-    public void TakeDamage(int amount)
+    public void TomarDanio(float danio)
     {
-        currentHealth -= amount;
-        Debug.Log($"{name} recibió {amount} de daño. Vida restante: {currentHealth}");
-
-        if (currentHealth <= 0)
+        vida -= danio;
+        if (vida <= 0)
         {
-            Die();
+            Muerte();
         }
     }
-
-    private void Die()
+    private void Muerte()
     {
-        Debug.Log($"{name} ha muerto");
-        Destroy(gameObject);
+        animator.SetTrigger("Muerte");
     }
 }

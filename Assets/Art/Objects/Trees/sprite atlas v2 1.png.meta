@@ -1722,7 +1722,71 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      sprite atlas v2 1_0: 2324385926799652411
+      sprite atlas v2 1_1: -739371728619211153
+      sprite atlas v2 1_10: -7285408447728801126
+      sprite atlas v2 1_11: 3957340728820654517
+      sprite atlas v2 1_12: -8742207180046101177
+      sprite atlas v2 1_13: -7449443083403837645
+      sprite atlas v2 1_14: -1064967127296308191
+      sprite atlas v2 1_15: -294397221759476981
+      sprite atlas v2 1_16: 4932835522747139597
+      sprite atlas v2 1_17: -3859290526868892664
+      sprite atlas v2 1_18: 2728760471388699053
+      sprite atlas v2 1_19: 7052410685168559947
+      sprite atlas v2 1_2: -3943481562748156988
+      sprite atlas v2 1_20: 653462170879476760
+      sprite atlas v2 1_21: -7896613516692531061
+      sprite atlas v2 1_22: -1655314360030000156
+      sprite atlas v2 1_23: -6248578501647800055
+      sprite atlas v2 1_24: 1592696592167084806
+      sprite atlas v2 1_25: 6717717968498265862
+      sprite atlas v2 1_26: -5486276880237133840
+      sprite atlas v2 1_27: -1492571309976010484
+      sprite atlas v2 1_28: 5873298215026052459
+      sprite atlas v2 1_29: -8217474764574849595
+      sprite atlas v2 1_3: -4611296759757064281
+      sprite atlas v2 1_30: 8596897748933051427
+      sprite atlas v2 1_31: -7261911931277201918
+      sprite atlas v2 1_32: -3733028822431016018
+      sprite atlas v2 1_33: -2599176862033959704
+      sprite atlas v2 1_34: -4120748443768419266
+      sprite atlas v2 1_35: 8882726764012098546
+      sprite atlas v2 1_36: 659561664365702783
+      sprite atlas v2 1_37: -8611516273969444702
+      sprite atlas v2 1_38: 1700963521530700767
+      sprite atlas v2 1_39: 7957237513834704576
+      sprite atlas v2 1_4: 4843953009933595448
+      sprite atlas v2 1_40: 7350590426809961020
+      sprite atlas v2 1_41: -7233630584520762227
+      sprite atlas v2 1_42: 7109257674697841419
+      sprite atlas v2 1_43: 8404341489658426730
+      sprite atlas v2 1_44: -7429369848028246265
+      sprite atlas v2 1_45: 2221780609984413039
+      sprite atlas v2 1_46: -1630197846156304342
+      sprite atlas v2 1_47: 4867740536540215052
+      sprite atlas v2 1_48: -8293048991043293026
+      sprite atlas v2 1_49: 2870252048530712254
+      sprite atlas v2 1_5: 3586150238024919486
+      sprite atlas v2 1_50: 2007050244778242223
+      sprite atlas v2 1_51: -1868624151097848133
+      sprite atlas v2 1_52: -1090723375715035050
+      sprite atlas v2 1_53: -9173084078208722541
+      sprite atlas v2 1_54: -8746244151493137627
+      sprite atlas v2 1_55: -5309253392985481388
+      sprite atlas v2 1_56: -8192944480548863876
+      sprite atlas v2 1_57: -4914093279345233406
+      sprite atlas v2 1_58: 7472870684890608929
+      sprite atlas v2 1_59: 5238230298164557426
+      sprite atlas v2 1_6: -8807975396627039293
+      sprite atlas v2 1_60: 1650148965600170828
+      sprite atlas v2 1_61: -5614881410313579446
+      sprite atlas v2 1_62: -5451011833454086548
+      sprite atlas v2 1_63: -3117739611688187365
+      sprite atlas v2 1_7: -6299801609215585985
+      sprite atlas v2 1_8: 3442753727527102891
+      sprite atlas v2 1_9: -9214174243222002752
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

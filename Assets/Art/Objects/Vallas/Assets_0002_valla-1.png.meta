@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Assets_0002_valla-1_0: -886312203913382231
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

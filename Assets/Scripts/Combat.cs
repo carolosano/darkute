@@ -48,10 +48,10 @@ public class Combat : MonoBehaviour
 
         foreach (Collider2D colisionador in objetos)
         {
-            // 1) Ignorarme a mí mismo (por si acaso)
+        
             if (colisionador.gameObject == this.gameObject) continue;
 
-            // 2) Solo pegarle a enemigos (esto ya lo tenías)
+           
             if (colisionador.CompareTag("Enemigo"))
             {
                 Enemy e = colisionador.GetComponent<Enemy>();

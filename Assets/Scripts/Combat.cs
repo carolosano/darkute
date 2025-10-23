@@ -7,19 +7,19 @@ public class Combat : MonoBehaviour
     [SerializeField] private Transform controladorGolpe;
     [SerializeField] private float radioGolpe = 1f;
     [SerializeField] private float danioGolpe = 20f;
-    [SerializeField] private string triggerNombre = "Ataque"; 
+    [SerializeField] private string triggerNombre = "Ataque";
 
     private Animator animator;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
-        
+
     }
 
     private void Update()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.K))
         {
             HacerAtaque();
@@ -34,7 +34,7 @@ public class Combat : MonoBehaviour
             animator.SetTrigger(triggerNombre);
         }
 
-        
+
         Golpe();
 
         Debug.Log("Ataque ejecutado (K) - trigger: " + triggerNombre);
@@ -48,10 +48,10 @@ public class Combat : MonoBehaviour
 
         foreach (Collider2D colisionador in objetos)
         {
-        
+
             if (colisionador.gameObject == this.gameObject) continue;
 
-           
+
             if (colisionador.CompareTag("Enemigo"))
             {
                 Enemy e = colisionador.GetComponent<Enemy>();
@@ -68,10 +68,12 @@ public class Combat : MonoBehaviour
         Gizmos.DrawWireSphere(controladorGolpe.position, radioGolpe);
     }
 
-    
+
     public void GolpePorAnimEvent()
     {
         Golpe();
     }
 }
+
+
 

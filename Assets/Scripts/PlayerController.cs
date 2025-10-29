@@ -21,39 +21,39 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
 
     private Vector2 input;
-    private Vector2 moveDir;        // dirección normalizada que se mueve este frame
-    private Vector2 lastLookDir = Vector2.down; // para Idle mirar “última” dirección
+    private Vector2 moveDir;        
+    private Vector2 lastLookDir = Vector2.down; 
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        // Config recomendado para top-down
-        rb.useFullKinematicContacts = true;  // para recibir contactos con colliders estáticos si te sirve
+        
+        rb.useFullKinematicContacts = true;  
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.freezeRotation = true;
     }
 
     private void Update()
     {
-        // 1) Leer input crudo (sin suavizado)
+        
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
         input = new Vector2(x, y);
 
-        // Si no querés diagonales, priorizá eje dominante:
+        
         if (!allowDiagonals && input.sqrMagnitude > 0f)
         {
             if (Mathf.Abs(x) >= Mathf.Abs(y)) input.y = 0f;
             else                              input.x = 0f;
         }
 
-        // 2) Dirección normalizada (diagonal no más rápida)
+        
         moveDir = input.normalized;
 
-        // 3) Animación
+        
         bool isMoving = moveDir.sqrMagnitude > 0.0001f;
         animator.SetBool("isMoving", isMoving);
 
@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Idle “mirando” a donde iba
+            
             animator.SetFloat("moveX", lastLookDir.x);
             animator.SetFloat("moveY", lastLookDir.y);
         }
@@ -75,19 +75,18 @@ public class PlayerController : MonoBehaviour
     {
         if (moveDir.sqrMagnitude < 0.0001f) return;
 
-        // 4) Cálculo del siguiente punto
+        
         Vector2 nextPos = rb.position + moveDir * moveSpeed * Time.fixedDeltaTime;
 
-        // 5) Chequeo de colisión simple en el punto objetivo
+       
         bool blocked = Physics2D.OverlapCircle(nextPos, probeRadius, solidLayer) != null;
         if (!blocked)
         {
-            rb.MovePosition(nextPos); // movimiento suave kinemático
+            rb.MovePosition(nextPos);
         }
         else
         {
-            // (Opcional) Intento por ejes para “deslizar” junto a paredes
-            // Primero X, luego Y (sólo si hay input en ese eje)
+            
             if (Mathf.Abs(moveDir.x) > 0.0001f)
             {
                 Vector2 tryX = rb.position + new Vector2(moveDir.x, 0f) * moveSpeed * Time.fixedDeltaTime;
@@ -109,7 +108,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Debug visual del probe
+    
     private void OnDrawGizmosSelected()
     {
         if (!Application.isPlaying) return;

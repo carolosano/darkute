@@ -1,18 +1,19 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuSystem : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Jugar()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        Debug.Log("[MENU] Click en Jugar");
+        SceneManager.LoadScene("IntroImage"); 
     }
 
     public void Salir()
     {
-        Debug.Log("Saliendo del Juego...");
+        Debug.Log("[MENU] Click en Salir");
         Application.Quit();
     }
 }
+
+

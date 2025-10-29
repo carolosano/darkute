@@ -10219,9 +10219,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  solidObjectsLayer:
+  allowDiagonals: 1
+  solidLayer:
     serializedVersion: 2
-    m_Bits: 384
+    m_Bits: 0
+  probeRadius: 0.15
 --- !u!95 &836456834
 Animator:
   serializedVersion: 7
@@ -10291,7 +10293,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 836456830}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0

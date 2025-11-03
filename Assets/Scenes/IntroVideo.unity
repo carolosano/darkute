@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntroVideoController
   videoPlayer: {fileID: 742566821}
-  nextScene: SampleScene
+  nextScene: IntroHouse
   maxWaitSeconds: 30
   allowSkip: 1
   skipKey: 32
@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntroVideoController
   videoPlayer: {fileID: 1990849972}
-  nextScene: SampleScene
+  nextScene: IntroHouse
   maxWaitSeconds: 30
   allowSkip: 1
   skipKey: 32

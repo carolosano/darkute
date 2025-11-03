@@ -22,41 +22,43 @@ public class Patrullar : MonoBehaviour
             return;
         }
 
+        // Elegí un punto inicial
         indice = Random.Range(0, puntosMovimientos.Length);
-        SetAnim(0f, false); // idle al iniciar
+        SetAnim(0f, false); // Idle al empezar
     }
 
     private void Update()
     {
+        // Si me deshabilitan desde Enemy (en Chasing), no ejecuto nada
+        if (!enabled) return;
+
         var objetivo = puntosMovimientos[indice];
-        if (!objetivo) { enabled = false; return; }
+        if (objetivo == null) { enabled = false; return; }
 
-        Vector2 pos = transform.position;
+        Vector2 pos  = transform.position;
         Vector2 dest = objetivo.position;
-        Vector2 dir = dest - pos;
 
-        bool moving = dir.sqrMagnitude > (distanciaMinima * distanciaMinima);
-        float moveX = 0f;
+        float dist = Vector2.Distance(pos, dest);
 
-        if (moving)
+        if (dist > distanciaMinima)
         {
-            // Eje dominante: si va más en X que en Y, usá ese signo; si es vertical, mantené la última mirada según destino.x
-            if (Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
-                moveX = Mathf.Sign(dir.x);
-            else
-                moveX = Mathf.Sign(dest.x - pos.x);
+            // Mover SIEMPRE hacia el punto con MoveTowards (coherente con Enemy)
+            float step = velocidadMovimiento * Time.deltaTime;
+            Vector2 next = Vector2.MoveTowards(pos, dest, step);
+            transform.position = next;
 
-            // Mover
-            Vector2 step = dir.normalized * (velocidadMovimiento * Time.deltaTime);
-            transform.position = pos + step;
+            // Para tu BlendTree de Walk (left/right) alimentamos moveX = signo de delta.x
+            float dx = dest.x - pos.x;
+            float moveX = Mathf.Abs(dx) < 0.0001f ? 0f : Mathf.Sign(dx);
+
+            SetAnim(moveX, true);
         }
         else
         {
             // Llegó → elegir nuevo punto
             indice = Random.Range(0, puntosMovimientos.Length);
+            SetAnim(0f, false); // Idle breve antes de ir al siguiente
         }
-
-        SetAnim(moveX, moving);
     }
 
     private void SetAnim(float moveX, bool isMoving)
@@ -66,3 +68,4 @@ public class Patrullar : MonoBehaviour
         animator.SetBool ("isMoving", isMoving);
     }
 }
+

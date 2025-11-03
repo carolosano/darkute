@@ -65,7 +65,8 @@ public class Combat : MonoBehaviour
             if (!c.CompareTag("Enemigo")) continue;
 
             var e = c.GetComponent<Enemy>();
-            if (e != null) e.TomarDanio(danioGolpe);
+            if (e != null) e.TomarDanio(danioGolpe, transform.position); 
+
         }
     }
 

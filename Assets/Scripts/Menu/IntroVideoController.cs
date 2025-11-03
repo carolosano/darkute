@@ -8,7 +8,7 @@ public class IntroVideoController : MonoBehaviour
     [SerializeField] private VideoPlayer videoPlayer; 
 
     [Header("Siguiente escena")]
-    [SerializeField] private string nextScene = "SampleScene"; 
+    [SerializeField] private string nextScene = "IntroHouse";  // ✅ valor por defecto corregido
     [Header("Fallback si el video falla")]
     [SerializeField] private float maxWaitSeconds = 30f;
 
@@ -30,6 +30,9 @@ public class IntroVideoController : MonoBehaviour
             videoPlayer = GetComponent<VideoPlayer>();
 
         _startTime = Time.unscaledTime;
+
+        // 🧩 Agregamos este log para ver qué valor REAL tiene nextScene
+        Debug.Log($"[IntroVideo] nextScene en runtime = '{nextScene}'");
 
         if (videoPlayer != null)
         {
@@ -65,14 +68,14 @@ public class IntroVideoController : MonoBehaviour
     private void OnVideoFinished(VideoPlayer vp)
     {
         if (_done) return;
-        Debug.Log("[IntroVideo] Video terminado, cargando SampleScene.");
+        Debug.Log($"[IntroVideo] Video terminado, cargando '{nextScene}'.");
         LoadNext();
     }
 
     private void OnVideoError(VideoPlayer vp, string message)
     {
         if (_done) return;
-        Debug.LogError($"[IntroVideo] Error en video: {message}. Cargando SampleScene.");
+        Debug.LogError($"[IntroVideo] Error en video: {message}. Cargando '{nextScene}'.");
         LoadNext();
     }
 
@@ -89,8 +92,15 @@ public class IntroVideoController : MonoBehaviour
     {
         if (_done) return;
         _done = true;
+
+        if (string.IsNullOrEmpty(nextScene))
+        {
+            Debug.LogError("[IntroVideo] ❌ No se configuró el nombre de la siguiente escena en el Inspector.");
+            return;
+        }
+
+        Debug.Log($"[IntroVideo] Cargando escena: {nextScene}");
         SceneManager.LoadScene(nextScene);
     }
 }
-
 

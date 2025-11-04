@@ -244,10 +244,12 @@ public class Enemy : MonoBehaviour
         if (!enLockDeAtaque && cooldownListo && (enRango || rangoPegajoso))
         {
             if (animator != null)
-            {
-                animator.SetTrigger(triggerAtaque);
-                Debug.Log("[ENEMY DEBUG] Animación de ataque activada");
-            }
+{
+            // Si tenés un estado de animación llamado igual a attackStateName, lo reproducimos
+            animator.CrossFade(attackStateName, 0.05f);
+            Debug.Log($"[ENEMY DEBUG] Animación '{attackStateName}' activada");
+}
+
 
             var ph = player.GetComponent<PlayerHealth>();
             if (ph != null)
@@ -394,40 +396,42 @@ public class Enemy : MonoBehaviour
         return 0f;
     }
         private System.Collections.IEnumerator EnemyHitSequence(Vector2 attackerPos)
-    {
-        hitStunned = true;
-
-        // 1) seteo de parámetros para elegir Left/Right del BlendTree de Hit
-        float faceX = (attackerPos.x < transform.position.x) ? -1f : 1f;
-        animator.SetFloat("faceX", faceX);
-        animator.SetBool("isMoving", false);
-
-        // 2) re-disparar el trigger siempre (aunque venga muy seguido)
-        animator.ResetTrigger("Hit");
-        animator.SetTrigger("Hit");
-
-        // 3) cortar patrulla
-        if (patrullar != null) patrullar.enabled = false;
-
-        // 4) knockback alejándose del atacante
-        Vector2 dir = ((Vector2)transform.position - attackerPos).normalized;
-
-        float t = 0f;
-        while (t < knockbackDuration)
         {
-            float step = (knockbackDistance / knockbackDuration) * Time.deltaTime;
-            float moved = EnemyCastAndMove(dir, step);
-            if (moved <= 0f) break; // chocó pared
-            t += Time.deltaTime;
-            yield return null;
+            hitStunned = true;
+
+            // 1️⃣ Determinar hacia dónde mirar y reproducir la animación de golpe
+            float faceX = (attackerPos.x < transform.position.x) ? -1f : 1f;
+            animator.SetFloat("faceX", faceX);
+            animator.SetBool("isMoving", false);
+
+            animator.ResetTrigger("Hit");
+            animator.SetTrigger("Hit");
+
+            if (patrullar != null)
+                patrullar.enabled = false;
+
+            // 2️⃣ Knockback leve solo si tiene Rigidbody2D (rebote corto y realista)
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                Vector2 dir = ((Vector2)transform.position - attackerPos).normalized;
+                rb.linearVelocity = Vector2.zero; // reset previo
+                rb.AddForce(dir * 2.5f, ForceMode2D.Impulse); // fuerza leve (ajustá si querés más/menos rebote)
+            }
+
+            // 3️⃣ Pequeño “stun” visual, el enemigo se queda quieto un instante
+            yield return new WaitForSeconds(hitStunTime + 0.1f);
+
+            // 4️⃣ Frena el movimiento residual y vuelve a perseguir
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+
+            hitStunned = false;
+            state = State.Chasing;
+            _hitCR = null;
         }
 
-        // 5) pequeño stun extra para que la anim se vea completa
-        yield return new WaitForSeconds(hitStunTime);
 
-        hitStunned = false;
-        _hitCR = null;
-    }
 
 
     // ========= MUERTE / POOL =========

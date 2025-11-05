@@ -4,8 +4,12 @@ public class Enemy : MonoBehaviour
 {
     private enum State { Patrolling, Chasing, Attacking, Dead }
     private State state = State.Patrolling;
-    private System.Collections.IEnumerator _hitCR;   // referencia a la corrutina de hit actual
-
+    private System.Collections.IEnumerator _hitCR;
+    [Header("Drop al morir")]
+    [SerializeField] private GameObject pickupOnDeath;   // Prefab del HeartPickup
+    [Range(0f,1f)] 
+    [SerializeField] private float dropChance = 1f;      // 1 = siempre, 0.5 = 50%
+    [SerializeField] private Vector2 dropOffset = new Vector2(0f, 0.2f);
     [Header("Vida")]
     [SerializeField] private float vidaMax = 50f;
     private float vida;
@@ -445,6 +449,7 @@ public class Enemy : MonoBehaviour
         if (animator != null) animator.SetTrigger("Muerte");
         if (col != null) col.enabled = false;
         if (patrullar != null) patrullar.enabled = false;
+        DropPickup();
 
         StartCoroutine(DevolverAlPoolDespues(deathDeactivateDelay));
     }
@@ -472,4 +477,13 @@ public class Enemy : MonoBehaviour
             Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
         }
     }
+    private void DropPickup()
+    {
+        if (pickupOnDeath == null) return;
+        if (Random.value > dropChance) return;
+
+        Vector3 pos = transform.position + (Vector3)dropOffset;
+        Instantiate(pickupOnDeath, pos, Quaternion.identity);
+    }
+
 }

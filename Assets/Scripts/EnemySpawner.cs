@@ -12,7 +12,6 @@ public class EnemySpawner : MonoBehaviour
         pool.Spawn(p.position, Quaternion.identity);
     }
 
-    // Ejemplo: spawnear uno al inicio
     private void Start()
     {
         SpawnOne();

@@ -56,15 +56,15 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // Si está dashing, no aceptar input de movimiento normal
+        
         if (isDashing) return;
 
-        // Input crudo
+
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         input = new Vector2(x, y);
 
-        // Eje dominante
+
         if (!allowDiagonals && input.sqrMagnitude > 0f)
         {
             if (Mathf.Abs(x) >= Mathf.Abs(y)) input.y = 0f;
@@ -73,7 +73,6 @@ public class PlayerController : MonoBehaviour
 
         moveDir = input.normalized;
 
-        // Animaciones
         bool isMoving = moveDir.sqrMagnitude > 0.0001f;
         animator.SetBool("isMoving", isMoving);
 
@@ -89,7 +88,6 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("moveY", lastLookDir.y);
         }
 
-        // Input de dash
         if (Input.GetKeyDown(dashKey))
             TryDash();
     }
@@ -134,15 +132,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // ================= DASH ==================
     private void TryDash()
     {
         if (isDashing || Time.time < nextDashAllowed) return;
 
-        // Dirección opuesta a donde mira
         Vector2 dir = -lastLookDir;
 
-        // Si está mirando solo verticalmente, dash por defecto hacia izquierda
         if (Mathf.Abs(dir.x) < 0.1f && Mathf.Abs(dir.y) > 0.1f)
             dir = Vector2.left;
 
@@ -154,7 +149,6 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         nextDashAllowed = Time.time + dashCooldown;
 
-        // Reproducir animación correcta
         if (dir.x < 0)
             animator.Play("DashLeft");
         else
@@ -173,7 +167,6 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         EndPassThroughEnemies();
 
-        // 🔄 Al terminar el dash, volver a Idle/Walk automáticamente
         animator.SetBool("isMoving", false);
         animator.SetFloat("moveX", lastLookDir.x);
         animator.SetFloat("moveY", lastLookDir.y);
@@ -181,7 +174,6 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
     }
 
-    // ============ IGNORAR ENEMIGOS =============
     private void BeginPassThroughEnemies()
     {
         if (!usingIgnoreCollisionFallback && dashLayer != -1)
@@ -229,14 +221,12 @@ public class PlayerController : MonoBehaviour
         return -1;
     }
 
-    // ============================================
     private void OnDrawGizmosSelected()
     {
         if (!Application.isPlaying) return;
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere((Vector2)transform.position + moveDir * moveSpeed * Time.fixedDeltaTime, probeRadius);
     }
-
     public Vector2 FacingDirection
     {
         get { return new Vector2(animator.GetFloat("moveX"), animator.GetFloat("moveY")).normalized; }

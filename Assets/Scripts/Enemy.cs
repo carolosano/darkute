@@ -1,15 +1,24 @@
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
+
 
 public class Enemy : MonoBehaviour
 {
+    // ====== NUEVO: eventos para conteo global ======
+    public static event Action<Enemy> OnAnyEnemySpawned;
+    public static event Action<Enemy> OnAnyEnemyDied;
+    // ===============================================
+
     private enum State { Patrolling, Chasing, Attacking, Dead }
     private State state = State.Patrolling;
     private System.Collections.IEnumerator _hitCR;
+
     [Header("Drop al morir")]
-    [SerializeField] private GameObject pickupOnDeath;   // Prefab del HeartPickup
-    [Range(0f,1f)] 
-    [SerializeField] private float dropChance = 1f;      // 1 = siempre, 0.5 = 50%
+    [SerializeField] private GameObject pickupOnDeath;   // (sigue funcionando si lo usás)
+    [Range(0f,1f)] [SerializeField] private float dropChance = 1f;
     [SerializeField] private Vector2 dropOffset = new Vector2(0f, 0.2f);
+
     [Header("Vida")]
     [SerializeField] private float vidaMax = 50f;
     private float vida;
@@ -44,7 +53,6 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float attackLockTime = 0.35f;
     [SerializeField] private float stickRangeTime = 0.15f;
 
-    // === NUEVO: Reacción al golpe ===
     [Header("Reacción al golpe (Enemy)")]
     [SerializeField] private float hitStunTime = 0.12f;
     [SerializeField] private float knockbackDistance = 0.5f;
@@ -64,6 +72,8 @@ public class Enemy : MonoBehaviour
     public SimpleEnemyPool poolOwner { get; set; }
     private float _nextAttackAllowed;
 
+    public bool IsDead { get; private set; }
+
     private void Awake()
     {
         animator  = GetComponentInChildren<Animator>();
@@ -74,6 +84,7 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         isDead = false;
+        OnAnyEnemySpawned?.Invoke(this);
         vida   = vidaMax;
         state  = State.Patrolling;
 
@@ -90,6 +101,9 @@ public class Enemy : MonoBehaviour
 
         _nextAttackAllowed = 0f;
         hitStunned = false;
+
+        // ====== NUEVO: avisar que apareció (para conteo) ======
+        OnAnyEnemySpawned?.Invoke(this);
     }
 
     private void Start()
@@ -114,10 +128,8 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-
         float dist = Vector2.Distance(transform.position, player.position);
 
-        // 1) Ejecutar lógica del estado actual
         switch (state)
         {
             case State.Patrolling: TickPatrolling(); break;
@@ -125,14 +137,13 @@ public class Enemy : MonoBehaviour
             case State.Attacking:  TickAttacking();  break;
         }
 
-        // 2) Transiciones entre estados (segundo switch)
         switch (state)
         {
             case State.Patrolling:
                 if (dist <= detectionRange)
                 {
                     state = State.Chasing;
-                    if (patrullar != null) patrullar.enabled = false; // cortar patrulla al empezar persecución
+                    if (patrullar != null) patrullar.enabled = false;
                 }
                 break;
 
@@ -140,38 +151,32 @@ public class Enemy : MonoBehaviour
                 if (dist <= attackDistance)
                 {
                     state = State.Attacking;
-
-                    // ✅ reset: permití atacar apenas entro a Attacking
                     _nextAttackAllowed = 0f;
                     attackLockUntil    = 0f;
                 }
                 else if (dist > detectionRange * loseSightMultiplier)
                 {
                     state = State.Patrolling;
-                    if (patrullar != null) patrullar.enabled = true;  // volver a patrullar
+                    if (patrullar != null) patrullar.enabled = true;
                     SetAnim(0f, false);
                     SafeGoIdle();
                 }
                 break;
 
             case State.Attacking:
-                // ✅ si se salió del rango de ataque, volver a perseguir y limpiar locks
                 if (dist > attackDistance + stopToAttackBuffer)
                 {
                     state = State.Chasing;
-                    attackLockUntil    = 0f;           // limpiar lock
-                    _nextAttackAllowed = Time.time;    // listo para reintentar cuando toque
-                    if (patrullar != null) patrullar.enabled = false; // seguimos sin patrulla en persecución
+                    attackLockUntil    = 0f;
+                    _nextAttackAllowed = Time.time;
+                    if (patrullar != null) patrullar.enabled = false;
                 }
                 break;
         }
     }
 
-
     private void TickPatrolling()
     {
-        // En patrulla, que se encargue el script Patrullar.
-        // Si por algún motivo Patrullar está apagado, quedate idle mirando al jugador.
         if (patrullar == null || !patrullar.enabled)
         {
             float faceX = LookAtPlayerX();
@@ -180,9 +185,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
-        private void TickChasing()
+    private void TickChasing()
     {
-        // Bloqueo breve tras atacar: mirá al jugador pero no te muevas
         if (Time.time < attackLockUntil)
         {
             float faceX = LookAtPlayerX();
@@ -190,23 +194,18 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        // 🚫 Asegurá que la patrulla esté cortada mientras perseguís
         if (patrullar != null && patrullar.enabled)
             patrullar.enabled = false;
 
-        // ✅ Movimiento "a prueba de balas": SIEMPRE hacia el jugador
         Vector2 from = transform.position;
         Vector2 to   = player.position;
 
         if ((to - from).sqrMagnitude > 0.000001f)
         {
             Vector2 dir = (to - from).normalized;
-
-            // Para el Animator: sólo eje X para tu BlendTree WalkBT (left/right)
             float faceX = Mathf.Abs(dir.x) < 0.0001f ? 0f : Mathf.Sign(dir.x);
             SetAnim(faceX, true);
             SafeGoWalk();
-
             float step = chaseSpeed * Time.deltaTime;
             transform.position = Vector2.MoveTowards(from, to, step);
         }
@@ -218,14 +217,13 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private float _attackLockMax = 0.6f; // failsafe
+    private float _attackLockMax = 0.6f;
 
     private void TickAttacking()
     {
         float dx = player.position.x - transform.position.x;
         float moveX = Mathf.Abs(dx) < 0.001f ? 0f : Mathf.Sign(dx);
         SetAnim(moveX, false);
-       
 
         bool enRango = InAttackRange();
         if (enRango) lastInRangeAt = Time.time;
@@ -234,7 +232,6 @@ public class Enemy : MonoBehaviour
         bool cooldownListo   = Time.time >= _nextAttackAllowed;
         bool enLockDeAtaque  = Time.time < attackLockUntil;
 
-        // 🩹 Failsafe: si estamos “lockeados” por demasiado tiempo, liberá
         if (enLockDeAtaque && (attackLockUntil - Time.time) > _attackLockMax)
         {
             Debug.LogWarning("[ENEMY DEBUG] Lock de ataque anormalmente largo; reseteando.");
@@ -242,18 +239,15 @@ public class Enemy : MonoBehaviour
             enLockDeAtaque  = false;
         }
 
-        // Log de estado
         Debug.Log($"[ENEMY DEBUG] Estado: {state} | enRango={enRango} | cooldownListo={cooldownListo} | enLock={enLockDeAtaque}");
 
         if (!enLockDeAtaque && cooldownListo && (enRango || rangoPegajoso))
         {
             if (animator != null)
-{
-            // Si tenés un estado de animación llamado igual a attackStateName, lo reproducimos
-            animator.CrossFade(attackStateName, 0.05f);
-            Debug.Log($"[ENEMY DEBUG] Animación '{attackStateName}' activada");
-}
-
+            {
+                animator.CrossFade(attackStateName, 0.05f);
+                Debug.Log($"[ENEMY DEBUG] Animación '{attackStateName}' activada");
+            }
 
             var ph = player.GetComponent<PlayerHealth>();
             if (ph != null)
@@ -265,28 +259,24 @@ public class Enemy : MonoBehaviour
             var react = player.GetComponent<PlayerHitReaction>();
             if (react != null) react.OnHit(transform.position);
 
-            // ✅ Seteá nuevo cooldown y lock (cortos)
-            _nextAttackAllowed = Time.time + attackCooldown; // ej. 1.5s
-            attackLockUntil    = Time.time + attackLockTime; // ej. 0.35s
+            _nextAttackAllowed = Time.time + attackCooldown;
+            attackLockUntil    = Time.time + attackLockTime;
         }
 
-        // Si se alejó del rango, volver a perseguir
         float dist = Vector2.Distance(transform.position, player.position);
         if (dist > attackDistance + stopToAttackBuffer)
         {
             state = State.Chasing;
             if (patrullar != null) patrullar.enabled = false;
         }
-    }                               
+    }
 
-
-    // Helper claro para “hacia dónde mirar” en X
     private float LookAtPlayerX()
     {
         if (player == null) return 1f;
         float dx = player.position.x - transform.position.x;
         if (Mathf.Abs(dx) < 0.0001f) return 0f;
-        return Mathf.Sign(dx); // -1 izq / +1 der
+        return Mathf.Sign(dx);
     }
 
     private bool InAttackRange()
@@ -324,36 +314,24 @@ public class Enemy : MonoBehaviour
             animator.CrossFade(idleStateName, crossFadeDuration, 0);
     }
 
-    // ========= REACCIÓN AL DAÑO (Enemy) =========
-
-    // Para compatibilidad si alguien llama sin posición:
     public void TomarDanio(float danio) => TomarDanio(danio, transform.position + Vector3.left);
 
-    // Nuevo: con posición del atacante
     public void TomarDanio(float danio, Vector2 attackerPos)
     {
         if (isDead) return;
 
         vida -= danio;
 
-        if (vida > 0f)
-        {
-            PlayHitReaction(attackerPos);
-        }
-        else
-        {
-            Muerte();
-        }
+        if (vida > 0f) PlayHitReaction(attackerPos);
+        else Muerte();
     }
+
     private void PlayHitReaction(Vector2 attackerPos)
     {
-        // si ya hay una reacción en curso, la reiniciamos para que se vea otra vez
         if (_hitCR != null) StopCoroutine(_hitCR);
         _hitCR = EnemyHitSequence(attackerPos);
         StartCoroutine(_hitCR);
     }
-    
-
 
     private System.Collections.IEnumerator EnemyKnockback(Vector2 dir)
     {
@@ -399,57 +377,53 @@ public class Enemy : MonoBehaviour
         }
         return 0f;
     }
-        private System.Collections.IEnumerator EnemyHitSequence(Vector2 attackerPos)
+
+    private System.Collections.IEnumerator EnemyHitSequence(Vector2 attackerPos)
+    {
+        hitStunned = true;
+
+        float faceX = (attackerPos.x < transform.position.x) ? -1f : 1f;
+        animator.SetFloat("faceX", faceX);
+        animator.SetBool("isMoving", false);
+
+        animator.ResetTrigger("Hit");
+        animator.SetTrigger("Hit");
+
+        if (patrullar != null) patrullar.enabled = false;
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
         {
-            hitStunned = true;
-
-            // 1️⃣ Determinar hacia dónde mirar y reproducir la animación de golpe
-            float faceX = (attackerPos.x < transform.position.x) ? -1f : 1f;
-            animator.SetFloat("faceX", faceX);
-            animator.SetBool("isMoving", false);
-
-            animator.ResetTrigger("Hit");
-            animator.SetTrigger("Hit");
-
-            if (patrullar != null)
-                patrullar.enabled = false;
-
-            // 2️⃣ Knockback leve solo si tiene Rigidbody2D (rebote corto y realista)
-            Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                Vector2 dir = ((Vector2)transform.position - attackerPos).normalized;
-                rb.linearVelocity = Vector2.zero; // reset previo
-                rb.AddForce(dir * 2.5f, ForceMode2D.Impulse); // fuerza leve (ajustá si querés más/menos rebote)
-            }
-
-            // 3️⃣ Pequeño “stun” visual, el enemigo se queda quieto un instante
-            yield return new WaitForSeconds(hitStunTime + 0.1f);
-
-            // 4️⃣ Frena el movimiento residual y vuelve a perseguir
-            if (rb != null)
-                rb.linearVelocity = Vector2.zero;
-
-            hitStunned = false;
-            state = State.Chasing;
-            _hitCR = null;
+            Vector2 dir = ((Vector2)transform.position - attackerPos).normalized;
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(dir * 2.5f, ForceMode2D.Impulse);
         }
 
+        yield return new WaitForSeconds(hitStunTime + 0.1f);
 
+        if (rb != null) rb.linearVelocity = Vector2.zero;
 
-
-    // ========= MUERTE / POOL =========
+        hitStunned = false;
+        state = State.Chasing;
+        _hitCR = null;
+    }
 
     private void Muerte()
     {
         if (isDead) return;
         isDead = true;
+        OnAnyEnemyDied?.Invoke(this); 
         state  = State.Dead;
 
         if (animator != null) animator.SetTrigger("Muerte");
         if (col != null) col.enabled = false;
         if (patrullar != null) patrullar.enabled = false;
+
+        // Drop individual (si lo usabas)
         DropPickup();
+
+        // ====== NUEVO: avisar muerte para conteo global ======
+        OnAnyEnemyDied?.Invoke(this);
 
         StartCoroutine(DevolverAlPoolDespues(deathDeactivateDelay));
     }
@@ -457,10 +431,8 @@ public class Enemy : MonoBehaviour
     private System.Collections.IEnumerator DevolverAlPoolDespues(float t)
     {
         yield return new WaitForSeconds(t);
-        if (poolOwner != null)
-            poolOwner.ReturnToPool(this.gameObject);
-        else
-            gameObject.SetActive(false);
+        if (poolOwner != null) poolOwner.ReturnToPool(this.gameObject);
+        else gameObject.SetActive(false);
     }
 
     private void OnDrawGizmosSelected()
@@ -477,6 +449,7 @@ public class Enemy : MonoBehaviour
             Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
         }
     }
+
     private void DropPickup()
     {
         if (pickupOnDeath == null) return;
@@ -485,5 +458,4 @@ public class Enemy : MonoBehaviour
         Vector3 pos = transform.position + (Vector3)dropOffset;
         Instantiate(pickupOnDeath, pos, Quaternion.identity);
     }
-
 }

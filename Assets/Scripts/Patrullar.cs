@@ -22,14 +22,12 @@ public class Patrullar : MonoBehaviour
             return;
         }
 
-        // Elegí un punto inicial
         indice = Random.Range(0, puntosMovimientos.Length);
-        SetAnim(0f, false); // Idle al empezar
+        SetAnim(0f, false); 
     }
 
     private void Update()
     {
-        // Si me deshabilitan desde Enemy (en Chasing), no ejecuto nada
         if (!enabled) return;
 
         var objetivo = puntosMovimientos[indice];
@@ -42,12 +40,10 @@ public class Patrullar : MonoBehaviour
 
         if (dist > distanciaMinima)
         {
-            // Mover SIEMPRE hacia el punto con MoveTowards (coherente con Enemy)
             float step = velocidadMovimiento * Time.deltaTime;
             Vector2 next = Vector2.MoveTowards(pos, dest, step);
             transform.position = next;
 
-            // Para tu BlendTree de Walk (left/right) alimentamos moveX = signo de delta.x
             float dx = dest.x - pos.x;
             float moveX = Mathf.Abs(dx) < 0.0001f ? 0f : Mathf.Sign(dx);
 
@@ -55,9 +51,8 @@ public class Patrullar : MonoBehaviour
         }
         else
         {
-            // Llegó → elegir nuevo punto
             indice = Random.Range(0, puntosMovimientos.Length);
-            SetAnim(0f, false); // Idle breve antes de ir al siguiente
+            SetAnim(0f, false); 
         }
     }
 

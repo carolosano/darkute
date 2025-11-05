@@ -13,12 +13,12 @@ public class DeathMenuController : MonoBehaviour
     [SerializeField] private Button btnIntroHouse;
 
     [Header("Opcional: Fade al entrar")]
-    [SerializeField] private CanvasGroup fadePanel;   // un panel negro con CanvasGroup (alpha 1 → 0)
+    [SerializeField] private CanvasGroup fadePanel; 
     [SerializeField] private float fadeInDuration = 0.4f;
 
     private void Awake()
     {
-        // Wire automático si no arrastraste los botones
+        
         if (btnMenu == null)    btnMenu = GameObject.Find("BtnMenu")?.GetComponent<Button>();
         if (btnIntroHouse == null) btnIntroHouse = GameObject.Find("BtnIntroHouse")?.GetComponent<Button>();
 
@@ -28,7 +28,7 @@ public class DeathMenuController : MonoBehaviour
 
     private void Start()
     {
-        // Fade-in suave al entrar (opcional)
+        
         if (fadePanel != null)
             StartCoroutine(FadeIn());
     }
@@ -42,8 +42,6 @@ public class DeathMenuController : MonoBehaviour
     {
         SceneManager.LoadScene(introHouseScene);
     }
-
-    // Por si querés un botón "Salir"
     public void QuitGame()
     {
         Application.Quit();
@@ -59,8 +57,6 @@ public class DeathMenuController : MonoBehaviour
         float t = 0f;
         float start = 1f;
         float end = 0f;
-
-        // Asegurá que arranca en negro
         fadePanel.alpha = start;
 
         while (t < fadeInDuration)

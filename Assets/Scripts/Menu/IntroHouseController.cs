@@ -4,10 +4,10 @@ using UnityEngine.SceneManagement;
 public class IntroHouseController : MonoBehaviour
 {
     [Header("Configuración de escena")]
-    [SerializeField] private Transform player;                  // Referencia al jugador
-    [SerializeField] private Transform puerta;                  // Puerta o punto de salida
-    [SerializeField] private string nextScene = "SampleScene";  // Escena a cargar
-    [SerializeField] private KeyCode useKey = KeyCode.E;        // Tecla para usar la puerta
+    [SerializeField] private Transform player;                  
+    [SerializeField] private Transform puerta;                 
+    [SerializeField] private string nextScene = "SampleScene"; 
+    [SerializeField] private KeyCode useKey = KeyCode.E;        
 
     private bool playerInDoor = false;
 
@@ -16,10 +16,8 @@ public class IntroHouseController : MonoBehaviour
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player").transform;
     }
-
     private void Update()
     {
-        // Si el jugador está en el área de la puerta y presiona la tecla, carga la siguiente escena
         if (playerInDoor && Input.GetKeyDown(useKey))
         {
             Debug.Log("[IntroHouse] Puerta usada, cargando siguiente escena...");
@@ -29,7 +27,6 @@ public class IntroHouseController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Detecta si el jugador entró al área de la puerta
         if (other.CompareTag("Player") && puerta && other.transform == player)
         {
             playerInDoor = true;
@@ -39,14 +36,12 @@ public class IntroHouseController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // Detecta si el jugador salió del área de la puerta
         if (other.CompareTag("Player") && other.transform == player)
         {
             playerInDoor = false;
         }
     }
 
-    // Dibuja el área de detección en la escena
     private void OnDrawGizmos()
     {
         if (puerta == null) return;

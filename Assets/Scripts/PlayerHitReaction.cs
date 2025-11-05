@@ -24,13 +24,9 @@ public class PlayerHitReaction : MonoBehaviour
         col  = GetComponent<Collider2D>();
     }
 
-    /// <summary>
-    /// Llamar cuando el enemigo golpea al jugador.
-    /// attackerPos = posición del enemigo.
-    /// </summary>
     public void OnHit(Vector2 attackerPos)
     {
-        // Reiniciar corrutina si ya había una
+        
         if (_hitCR != null) StopCoroutine(_hitCR);
         _hitCR = HitSequence(attackerPos);
         StartCoroutine(_hitCR);
@@ -40,19 +36,18 @@ public class PlayerHitReaction : MonoBehaviour
     {
         stunned = true;
 
-        // 1️⃣ Determinar hacia dónde mirar
+        
         float faceX = (attackerPos.x < transform.position.x) ? -1f : 1f;
         anim.SetFloat("faceX", faceX);
         anim.SetBool("isMoving", false);
 
-        // 2️⃣ Reiniciar el trigger y volver a dispararlo (para que siempre se vea la anim)
+        
         anim.ResetTrigger("Hit");
         anim.SetTrigger("Hit");
 
-        // 3️⃣ Calcular dirección del knockback (alejarse del atacante)
+        
         Vector2 dir = ((Vector2)transform.position - attackerPos).normalized;
 
-        // 4️⃣ Knockback progresivo con colisiones
         float t = 0f;
         while (t < knockbackDuration)
         {
@@ -63,7 +58,6 @@ public class PlayerHitReaction : MonoBehaviour
             yield return null;
         }
 
-        // 5️⃣ Breve stun para mostrar bien la animación
         yield return new WaitForSeconds(hitStunTime);
 
         stunned = false;

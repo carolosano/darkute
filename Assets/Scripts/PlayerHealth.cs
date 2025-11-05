@@ -16,29 +16,21 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
-        // Cada corazón = 2 medios
         currentHalves = maxHearts * 2;
     }
 
     private void Start()
     {
-        // Unity 2023+: reemplaza FindObjectOfType por FindFirstObjectByType
+       
         heartsUI = FindFirstObjectByType<HeartsUI>();
         ActualizarHUD();
     }
 
-    /// <summary>
-    /// Llamá esto cuando el jugador reciba daño. 
-    /// Por diseño actual: cada golpe quita 1 medio corazón, sin importar el "danio" float.
-    /// </summary>
     public void TomarDanio(float danio)
     {
         QuitarMediosCorazones(1);
     }
 
-    /// <summary>
-    /// Si en algún momento querés quitar N medios (p.ej. 2 medios = 1 corazón), usá este método.
-    /// </summary>
     public void QuitarMediosCorazones(int halvesToRemove)
     {
         int before = currentHalves;
@@ -54,9 +46,6 @@ public class PlayerHealth : MonoBehaviour
             Muerte();
     }
 
-    /// <summary>
-    /// Curar en medios corazones (opcional).
-    /// </summary>
     public void CurarMedios(int halvesToHeal)
     {
         int before = currentHalves;
@@ -73,9 +62,9 @@ public class PlayerHealth : MonoBehaviour
     {
         if (heartsUI == null) return;
 
-        // Corazones enteros = currentHalves / 2
+        
         int fullHearts = currentHalves / 2;
-        // Hay medio corazón si sobra 1 half
+       
         bool hasHalf = (currentHalves % 2) == 1;
 
         heartsUI.ActualizarHearts(fullHearts, hasHalf, maxHearts);
@@ -87,23 +76,19 @@ public class PlayerHealth : MonoBehaviour
 
         var anim = GetComponent<Animator>();
 
-        // Elegí hacia dónde mira al morir. Si guardás la última dirección en el Animator,
-        // podés reutilizarla; si no, asumimos que ya venías setenando moveX/moveY.
         float faceX = 1f;
         if (anim != null)
         {
-            // Si usás moveX/moveY como “mirada”, aprovechalos:
+        
             var mx = anim.GetFloat("moveX");
             faceX = Mathf.Abs(mx) > 0.001f ? Mathf.Sign(mx) : 1f;
 
-            // Limpiamos posibles triggers previos y disparamos muerte
             anim.ResetTrigger("Hit");
             anim.ResetTrigger("Ataque");
             anim.SetFloat("faceX", faceX);
             anim.SetTrigger("Muerte");
         }
 
-        // Desactivar control/físicas si corresponde
         var controller = GetComponent<PlayerController>();
         if (controller) controller.enabled = false;
         var rb = GetComponent<Rigidbody2D>();
@@ -111,7 +96,6 @@ public class PlayerHealth : MonoBehaviour
         var col = GetComponent<Collider2D>();
         if (col) col.enabled = false;
 
-        // Fade + cambio de escena (si ya lo tenés implementado)
         StartCoroutine(FadeOutAndLoadMenuMuerte());
     }
 
@@ -119,7 +103,6 @@ public class PlayerHealth : MonoBehaviour
 
     private System.Collections.IEnumerator FadeOutAndLoadMenuMuerte()
     {
-        // Espera que se vea bien la animación (ajustá el tiempo según tu animación)
         yield return new WaitForSeconds(1.5f);
 
         if (fadePanel != null)

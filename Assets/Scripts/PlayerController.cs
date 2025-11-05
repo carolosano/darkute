@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -7,59 +6,74 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
     [SerializeField] private float moveSpeed = 4f;
-    [Tooltip("Permite diagonales; si lo desactivás, prioriza el eje dominante.")]
     [SerializeField] private bool allowDiagonals = true;
 
     [Header("Colisiones")]
-    [Tooltip("Capas que bloquean el movimiento (paredes/obstáculos).")]
     [SerializeField] private LayerMask solidLayer;
-    [Tooltip("Radio del chequeo de colisión en el punto objetivo.")]
     [SerializeField] private float probeRadius = 0.15f;
+
+    [Header("Dash (Esquive hacia atrás)")]
+    [SerializeField] private KeyCode dashKey = KeyCode.Space;
+    [SerializeField] private float dashSpeed = 9f;
+    [SerializeField] private float dashDuration = 0.14f;
+    [SerializeField] private float dashCooldown = 0.35f;
+    [Tooltip("Nombre del layer alternativo que ignora colisiones con enemigos durante el dash")]
+    [SerializeField] private string dashLayerName = "PlayerDash";
+    [SerializeField] private LayerMask enemyLayer;
 
     private Rigidbody2D rb;
     private Animator animator;
+    private Collider2D col;
 
     private Vector2 input;
     private Vector2 moveDir;
     private Vector2 lastLookDir = Vector2.down;
 
+    private bool isDashing;
+    private float nextDashAllowed;
+    private int originalLayer;
+    private int dashLayer = -1;
+    private bool usingIgnoreCollisionFallback;
+    private bool enemiesIgnored;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
         animator = GetComponent<Animator>();
 
-        // ⚙️ Config para Rigidbody2D Dynamic (top-down sin gravedad)
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.freezeRotation = true;
         rb.gravityScale = 0f;
-
-        // 🧯 Frenar empujes y “rebotes” no deseados
         rb.linearDamping = 10f;
         rb.angularDamping = 10f;
-
-        // (Opcional, no molesta si queda) útil cuando el otro es Kinematic
         rb.useFullKinematicContacts = true;
+
+        originalLayer = gameObject.layer;
+        dashLayer = LayerMask.NameToLayer(dashLayerName);
+        usingIgnoreCollisionFallback = (dashLayer == -1);
     }
 
     private void Update()
     {
-        // 1) Input crudo
+        // Si está dashing, no aceptar input de movimiento normal
+        if (isDashing) return;
+
+        // Input crudo
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
-
         input = new Vector2(x, y);
 
-        // 2) Si no querés diagonales, priorizá eje dominante
+        // Eje dominante
         if (!allowDiagonals && input.sqrMagnitude > 0f)
         {
             if (Mathf.Abs(x) >= Mathf.Abs(y)) input.y = 0f;
-            else                              input.x = 0f;
+            else input.x = 0f;
         }
 
-        // 3) Dirección normalizada (diagonal no más rápida)
         moveDir = input.normalized;
 
-        // 4) Animación
+        // Animaciones
         bool isMoving = moveDir.sqrMagnitude > 0.0001f;
         animator.SetBool("isMoving", isMoving);
 
@@ -71,33 +85,34 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Idle mirando a la última dirección
             animator.SetFloat("moveX", lastLookDir.x);
             animator.SetFloat("moveY", lastLookDir.y);
         }
+
+        // Input de dash
+        if (Input.GetKeyDown(dashKey))
+            TryDash();
     }
 
     private void FixedUpdate()
     {
-        // Si no hay input, cancelá cualquier velocidad residual de colisiones
+        if (isDashing) return;
+
         if (moveDir.sqrMagnitude < 0.0001f)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        // Cálculo del siguiente punto deseado
         Vector2 nextPos = rb.position + moveDir * moveSpeed * Time.fixedDeltaTime;
-
-        // Chequeo simple de colisión en el punto objetivo
         bool blocked = Physics2D.OverlapCircle(nextPos, probeRadius, solidLayer) != null;
+
         if (!blocked)
         {
             rb.MovePosition(nextPos);
         }
         else
         {
-            // Intento por ejes para deslizar junto a paredes
             if (Mathf.Abs(moveDir.x) > 0.0001f)
             {
                 Vector2 tryX = rb.position + new Vector2(moveDir.x, 0f) * moveSpeed * Time.fixedDeltaTime;
@@ -119,7 +134,102 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Debug visual del probe
+    // ================= DASH ==================
+    private void TryDash()
+    {
+        if (isDashing || Time.time < nextDashAllowed) return;
+
+        // Dirección opuesta a donde mira
+        Vector2 dir = -lastLookDir;
+
+        // Si está mirando solo verticalmente, dash por defecto hacia izquierda
+        if (Mathf.Abs(dir.x) < 0.1f && Mathf.Abs(dir.y) > 0.1f)
+            dir = Vector2.left;
+
+        StartCoroutine(DashCoroutine(dir));
+    }
+
+    private IEnumerator DashCoroutine(Vector2 dir)
+    {
+        isDashing = true;
+        nextDashAllowed = Time.time + dashCooldown;
+
+        // Reproducir animación correcta
+        if (dir.x < 0)
+            animator.Play("DashLeft");
+        else
+            animator.Play("DashRight");
+
+        BeginPassThroughEnemies();
+
+        float elapsed = 0f;
+        while (elapsed < dashDuration)
+        {
+            rb.linearVelocity = dir.normalized * dashSpeed;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        rb.linearVelocity = Vector2.zero;
+        EndPassThroughEnemies();
+
+        // 🔄 Al terminar el dash, volver a Idle/Walk automáticamente
+        animator.SetBool("isMoving", false);
+        animator.SetFloat("moveX", lastLookDir.x);
+        animator.SetFloat("moveY", lastLookDir.y);
+
+        isDashing = false;
+    }
+
+    // ============ IGNORAR ENEMIGOS =============
+    private void BeginPassThroughEnemies()
+    {
+        if (!usingIgnoreCollisionFallback && dashLayer != -1)
+        {
+            gameObject.layer = dashLayer;
+        }
+        else
+        {
+            int playerLayer = originalLayer;
+            int enemyLayerIndex = FirstLayerFromMask(enemyLayer);
+            if (enemyLayerIndex != -1)
+            {
+                Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, true);
+                enemiesIgnored = true;
+            }
+        }
+    }
+
+    private void EndPassThroughEnemies()
+    {
+        if (!usingIgnoreCollisionFallback && dashLayer != -1)
+        {
+            gameObject.layer = originalLayer;
+        }
+        else if (enemiesIgnored)
+        {
+            int playerLayer = originalLayer;
+            int enemyLayerIndex = FirstLayerFromMask(enemyLayer);
+            if (enemyLayerIndex != -1)
+            {
+                Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, false);
+            }
+            enemiesIgnored = false;
+        }
+    }
+
+    private int FirstLayerFromMask(LayerMask mask)
+    {
+        int m = mask.value;
+        if (m == 0) return -1;
+        for (int i = 0; i < 32; i++)
+        {
+            if ((m & (1 << i)) != 0) return i;
+        }
+        return -1;
+    }
+
+    // ============================================
     private void OnDrawGizmosSelected()
     {
         if (!Application.isPlaying) return;
@@ -129,10 +239,9 @@ public class PlayerController : MonoBehaviour
 
     public Vector2 FacingDirection
     {
-        get
-        {
-            return new Vector2(animator.GetFloat("moveX"), animator.GetFloat("moveY")).normalized;
-        }
+        get { return new Vector2(animator.GetFloat("moveX"), animator.GetFloat("moveY")).normalized; }
     }
 }
+
+
 

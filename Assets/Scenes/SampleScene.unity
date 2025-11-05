@@ -85826,6 +85826,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6602194645287323535, guid: f0397e992fbaf47e5a68d21fbcaa2d29, type: 3}
+      propertyPath: rotate
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5336419390777318271, guid: f0397e992fbaf47e5a68d21fbcaa2d29, type: 3}
       propertyPath: m_Name
       value: HeartPickup
@@ -85953,6 +85957,14 @@ PrefabInstance:
     - target: {fileID: 6609839492559164347, guid: 5385151cd7e4e4aa0b9f29dd6d407c4a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8302674759301220579, guid: 5385151cd7e4e4aa0b9f29dd6d407c4a, type: 3}
+      propertyPath: dashSpeed
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8302674759301220579, guid: 5385151cd7e4e4aa0b9f29dd6d407c4a, type: 3}
+      propertyPath: dashDuration
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

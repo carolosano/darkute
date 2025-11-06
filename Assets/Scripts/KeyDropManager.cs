@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class KeyDropManager : MonoBehaviour
 {
@@ -7,7 +8,12 @@ public class KeyDropManager : MonoBehaviour
 
     [SerializeField] private Vector2 dropOffset = new Vector2(0f, 0.35f);
 
-    private int alive;
+    [Header("Opcional: validar total")]
+    [Tooltip("Si > 0, solo dropea cuando deathsCount == expectedTotal y no queda nadie vivo.")]
+    [SerializeField] private int expectedTotal = 0;
+
+    private readonly HashSet<Enemy> aliveSet = new HashSet<Enemy>();
+    private int deathsCount;
     private bool keySpawned;
 
     private void OnEnable()
@@ -24,42 +30,48 @@ public class KeyDropManager : MonoBehaviour
 
     private void Start()
     {
-        // Conteo inicial por si ya hay enemigos activos en escena
+        // Poblado inicial por si ya hay enemigos en escena
+        aliveSet.Clear();
         var enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-        alive = 0;
         foreach (var e in enemies)
         {
-            if (e != null && !e.IsDead) alive++;
+            if (e != null && !e.IsDead)
+                aliveSet.Add(e);
         }
 
+        deathsCount = 0;
         keySpawned = false;
-        Debug.Log($"[KeyDropManager] Enemigos vivos (inicio): {alive}");
+        Debug.Log($"[KeyDropManager] Vivos (inicio): {aliveSet.Count}");
     }
 
     private void HandleSpawned(Enemy e)
     {
-        alive++;
-        // Debug.Log($"[KeyDropManager] Spawn -> vivos: {alive}");
+        if (e == null) return;
+        aliveSet.Add(e);
+        // Debug.Log($"[KeyDropManager] Spawn -> vivos: {aliveSet.Count}");
     }
 
     private void HandleDied(Enemy e)
     {
-        alive = Mathf.Max(0, alive - 1);
-        // Debug.Log($"[KeyDropManager] Muere -> vivos: {alive}");
+        // Importante: remover solo si estaba en el set (evita doble decremento)
+        bool removed = (e != null) && aliveSet.Remove(e);
+        if (removed) deathsCount++;
 
-        if (!keySpawned && alive == 0)
+        // Debug.Log($"[KeyDropManager] Muere -> vivos: {aliveSet.Count} | deaths: {deathsCount}");
+
+        if (keySpawned) return;
+        if (aliveSet.Count > 0) return;
+        if (expectedTotal > 0 && deathsCount != expectedTotal) return;
+
+        if (keyPrefab == null)
         {
-            if (keyPrefab == null)
-            {
-                Debug.LogWarning("[KeyDropManager] keyPrefab no asignado, no se puede spawnear la llave.");
-                return;
-            }
-
-            // Spawnear donde murió el último enemigo
-            Vector3 pos = (e != null ? e.transform.position : Vector3.zero) + (Vector3)dropOffset;
-            Instantiate(keyPrefab, pos, Quaternion.identity);
-            keySpawned = true;
-            Debug.Log("[KeyDropManager] ¡Último enemigo! Llave spawneada.");
+            Debug.LogWarning("[KeyDropManager] keyPrefab no asignado, no se puede spawnear la llave.");
+            return;
         }
+
+        Vector3 pos = (e != null ? e.transform.position : Vector3.zero) + (Vector3)dropOffset;
+        Instantiate(keyPrefab, pos, Quaternion.identity);
+        keySpawned = true;
+        Debug.Log("[KeyDropManager] ¡Último enemigo! Llave spawneada.");
     }
 }

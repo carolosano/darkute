@@ -2,20 +2,18 @@ using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 
-
 public class Enemy : MonoBehaviour
 {
-    // ====== NUEVO: eventos para conteo global ======
+    // Eventos globales
     public static event Action<Enemy> OnAnyEnemySpawned;
     public static event Action<Enemy> OnAnyEnemyDied;
-    // ===============================================
 
     private enum State { Patrolling, Chasing, Attacking, Dead }
     private State state = State.Patrolling;
     private System.Collections.IEnumerator _hitCR;
 
-    [Header("Drop al morir")]
-    [SerializeField] private GameObject pickupOnDeath;   // (sigue funcionando si lo usás)
+    [Header("Drop al morir (NO usar para la llave final)")]
+    [SerializeField] private GameObject pickupOnDeath;
     [Range(0f,1f)] [SerializeField] private float dropChance = 1f;
     [SerializeField] private Vector2 dropOffset = new Vector2(0f, 0.2f);
 
@@ -61,10 +59,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float skin = 0.02f;
 
     private bool hitStunned;
-
     private float lastInRangeAt = -999f;
     private float attackLockUntil = 0f;
-    private bool isDead;
+
+    private bool isDead; // guardia real de muerte
     private Animator animator;
     private Transform player;
     private Collider2D col;
@@ -72,7 +70,7 @@ public class Enemy : MonoBehaviour
     public SimpleEnemyPool poolOwner { get; set; }
     private float _nextAttackAllowed;
 
-    public bool IsDead { get; private set; }
+    public bool IsDead => isDead;
 
     private void Awake()
     {
@@ -83,8 +81,8 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
+        // Reset estado
         isDead = false;
-        OnAnyEnemySpawned?.Invoke(this);
         vida   = vidaMax;
         state  = State.Patrolling;
 
@@ -102,7 +100,7 @@ public class Enemy : MonoBehaviour
         _nextAttackAllowed = 0f;
         hitStunned = false;
 
-        // ====== NUEVO: avisar que apareció (para conteo) ======
+        // IMPORTANTE: anunciar spawn UNA sola vez
         OnAnyEnemySpawned?.Invoke(this);
     }
 
@@ -239,22 +237,13 @@ public class Enemy : MonoBehaviour
             enLockDeAtaque  = false;
         }
 
-        Debug.Log($"[ENEMY DEBUG] Estado: {state} | enRango={enRango} | cooldownListo={cooldownListo} | enLock={enLockDeAtaque}");
-
         if (!enLockDeAtaque && cooldownListo && (enRango || rangoPegajoso))
         {
             if (animator != null)
-            {
                 animator.CrossFade(attackStateName, 0.05f);
-                Debug.Log($"[ENEMY DEBUG] Animación '{attackStateName}' activada");
-            }
 
             var ph = player.GetComponent<PlayerHealth>();
-            if (ph != null)
-            {
-                ph.TomarDanio(danio);
-                Debug.Log($"[ENEMY DEBUG] Golpe aplicado. Daño={danio}");
-            }
+            if (ph != null) ph.TomarDanio(danio);
 
             var react = player.GetComponent<PlayerHitReaction>();
             if (react != null) react.OnHit(transform.position);
@@ -291,11 +280,6 @@ public class Enemy : MonoBehaviour
         if (animator == null) return;
         animator.SetFloat("moveX", Mathf.Clamp(moveX, -1f, 1f));
         animator.SetBool ("isMoving", isMoving);
-    }
-
-    private float GetMoveXFacing()
-    {
-        return animator != null ? Mathf.Sign(animator.GetFloat("moveX")) : 1f;
     }
 
     private void SafeGoWalk()
@@ -410,20 +394,19 @@ public class Enemy : MonoBehaviour
 
     private void Muerte()
     {
-        if (isDead) return;
+        if (isDead) return;          // <<< guardia: solo una vez
         isDead = true;
-        OnAnyEnemyDied?.Invoke(this); 
-        state  = State.Dead;
 
+        state  = State.Dead;
         if (animator != null) animator.SetTrigger("Muerte");
         if (col != null) col.enabled = false;
         if (patrullar != null) patrullar.enabled = false;
 
-        // Drop individual (si lo usabas)
-        DropPickup();
-
-        // ====== NUEVO: avisar muerte para conteo global ======
+        // Avisar muerte UNA sola vez
         OnAnyEnemyDied?.Invoke(this);
+
+        // Drop individual opcional (NO usar para la llave final)
+        DropPickup();
 
         StartCoroutine(DevolverAlPoolDespues(deathDeactivateDelay));
     }
@@ -452,6 +435,7 @@ public class Enemy : MonoBehaviour
 
     private void DropPickup()
     {
+        // Importante: si querés que la llave SOLO salga del último enemigo, NO pongas la llave acá.
         if (pickupOnDeath == null) return;
         if (Random.value > dropChance) return;
 
@@ -459,3 +443,4 @@ public class Enemy : MonoBehaviour
         Instantiate(pickupOnDeath, pos, Quaternion.identity);
     }
 }
+

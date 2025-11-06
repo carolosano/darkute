@@ -4,17 +4,17 @@ using UnityEngine;
 public class LockedGate : MonoBehaviour
 {
     [Header("Apertura")]
-    [SerializeField] private bool autoOpenWhenKeyObtained = true;
+    [SerializeField] private bool autoOpenWhenKeyObtained = false; // ahora por defecto false para usar interacción
     [SerializeField] private GameObject[] visualsToHide; // sprites/tiles que quieras ocultar
 
     private Collider2D col;
     private bool opened;
+    public bool IsOpened => opened;
 
     private void Awake()
     {
         col = GetComponent<Collider2D>();
-        // Asegurate que sea sólido (IsTrigger = false) para bloquear
-        col.isTrigger = false;
+        col.isTrigger = false; // Sólido: bloquea el paso
     }
 
     private void OnEnable()
@@ -45,5 +45,6 @@ public class LockedGate : MonoBehaviour
             if (go != null) go.SetActive(false);
         }
         Debug.Log("[LockedGate] Puerta/Canal desbloqueado.");
+        gameObject.SetActive(false);
     }
 }

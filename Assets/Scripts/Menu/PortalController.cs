@@ -1,0 +1,105 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
+
+public class PortalController : MonoBehaviour
+{
+    [Header("Componentes")]
+    [SerializeField] private VideoPlayer videoPlayer; 
+
+    [Header("Siguiente escena")]
+    [SerializeField] private string nextScene = "Menu"; 
+    [Header("Fallback si el video falla")]
+    [SerializeField] private float maxWaitSeconds = 30f;
+
+    [Header("Opcional: permitir saltar")]
+    [SerializeField] private bool allowSkip = true;
+    [SerializeField] private KeyCode skipKey = KeyCode.Space;
+
+    private bool _done;
+    private float _startTime;
+
+    private void Reset()
+    {
+        videoPlayer = GetComponent<VideoPlayer>();
+    }
+
+    private void Start()
+    {
+        if (videoPlayer == null)
+            videoPlayer = GetComponent<VideoPlayer>();
+
+        _startTime = Time.unscaledTime;
+
+        // 🧩 Agregamos este log para ver qué valor REAL tiene nextScene
+        Debug.Log($"[Menu] nextScene en runtime = '{nextScene}'");
+
+        if (videoPlayer != null)
+        {
+            videoPlayer.loopPointReached += OnVideoFinished;
+            videoPlayer.errorReceived += OnVideoError;
+            videoPlayer.Play();
+        }
+        else
+        {
+            Debug.LogWarning("[Menu] No hay VideoPlayer asignado, cargando siguiente escena.");
+            LoadNext();
+        }
+    }
+
+    private void Update()
+    {
+        if (_done) return;
+
+        if (allowSkip && Input.GetKeyDown(skipKey))
+        {
+            Debug.Log("[Menu] Video saltado manualmente.");
+            LoadNext();
+            return;
+        }
+
+        if (Time.unscaledTime - _startTime > maxWaitSeconds)
+        {
+            Debug.LogWarning("[Menu] Timeout alcanzado, cargando siguiente escena.");
+            LoadNext();
+        }
+    }
+
+    private void OnVideoFinished(VideoPlayer vp)
+    {
+        if (_done) return;
+        Debug.Log($"[Menu] Video terminado, cargando '{nextScene}'.");
+        LoadNext();
+    }
+
+    private void OnVideoError(VideoPlayer vp, string message)
+    {
+        if (_done) return;
+        Debug.LogError($"[Menu] Error en video: {message}. Cargando '{nextScene}'.");
+        LoadNext();
+    }
+
+    private void OnDestroy()
+    {
+        if (videoPlayer != null)
+        {
+            videoPlayer.loopPointReached -= OnVideoFinished;
+            videoPlayer.errorReceived -= OnVideoError;
+        }
+    }
+
+    private void LoadNext()
+    {
+        if (_done) return;
+        _done = true;
+
+        if (string.IsNullOrEmpty(nextScene))
+        {
+            Debug.LogError("[Menu] ❌ No se configuró el nombre de la siguiente escena en el Inspector.");
+            return;
+        }
+
+        Debug.Log($"[Menu] Cargando escena: {nextScene}");
+        SceneManager.LoadScene(nextScene);
+    }
+}

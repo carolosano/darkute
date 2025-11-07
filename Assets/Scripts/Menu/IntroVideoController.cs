@@ -8,7 +8,7 @@ public class IntroVideoController : MonoBehaviour
     [SerializeField] private VideoPlayer videoPlayer; 
 
     [Header("Siguiente escena")]
-    [SerializeField] private string nextScene = "IntroHouse";  // ✅ valor por defecto corregido
+    [SerializeField] private string nextScene = "IntroHouse"; 
     [Header("Fallback si el video falla")]
     [SerializeField] private float maxWaitSeconds = 30f;
 

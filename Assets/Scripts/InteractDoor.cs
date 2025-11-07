@@ -109,6 +109,8 @@ public class InteractDoor : MonoBehaviour
         if (gateToOpen != null)
         {
             gateToOpen.Open();
+            if (ProgressManager.Instance != null)
+                ProgressManager.Instance.SetStage(ProgressStage.CP6_DoorOpened);
             Debug.Log("[InteractDoor] Puerta abierta.");
         }
         else

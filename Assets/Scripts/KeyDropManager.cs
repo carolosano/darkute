@@ -73,5 +73,7 @@ public class KeyDropManager : MonoBehaviour
         Instantiate(keyPrefab, pos, Quaternion.identity);
         keySpawned = true;
         Debug.Log("[KeyDropManager] ¡Último enemigo! Llave spawneada.");
+        if (ProgressManager.Instance != null)
+        ProgressManager.Instance.SetStage(ProgressStage.CP5_LastEnemyDown);
     }
 }

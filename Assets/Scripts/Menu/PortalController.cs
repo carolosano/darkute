@@ -96,11 +96,21 @@ public class PortalController : MonoBehaviour
 
         if (string.IsNullOrEmpty(nextScene))
         {
-            Debug.LogError("[Menu]  No se configuró el nombre de la siguiente escena en el Inspector.");
+            Debug.LogError("[Menu] No se configuró nextScene.");
             return;
         }
 
-        Debug.Log($"[Menu] Cargando escena: {nextScene}");
-        SceneManager.LoadScene(nextScene);
+        // Verificá que la escena exista en Build Settings
+        if (!Application.CanStreamedLevelBeLoaded(nextScene))
+        {
+            Debug.LogError($"[Menu] La escena '{nextScene}' NO está en Build Settings o el nombre no coincide EXACTO.");
+            return;
+        }
+
+        Debug.Log($"[Menu] Cargando escena: {nextScene} (desde PortalController). " +
+                $"Stack:\n{new System.Diagnostics.StackTrace(true)}");
+
+        SceneManager.LoadScene(nextScene, LoadSceneMode.Single);
     }
+
 }

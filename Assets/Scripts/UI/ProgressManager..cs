@@ -2,15 +2,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 
+
+
+// este script era para hacer checkpoints durante el juego y que muestre los objetivos que faltan pero al finl no tuve tiempo de i,plementarlo :)
 public enum ProgressStage
 {
     None = 0,
-    CP1_IntroHouse = 1,     // escena IntroHouse
-    CP2_IntroDueno = 2,     // escena IntroDueño
-    CP3_BackToSample = 3,   // volver a SampleScene después de IntroDueño
-    CP4_MapZone = 4,        // trigger en el mapa
-    CP5_LastEnemyDown = 5,  // último enemigo derrotado (dropea llave)
-    CP6_DoorOpened = 6      // abre la puerta con la llave
+    CP1_IntroHouse = 1,
+    CP2_IntroDueno = 2,
+    CP3_BackToSample = 3,
+    CP4_MapZone = 4,
+    CP5_LastEnemyDown = 5,
+    CP6_DoorOpened = 6
 }
 
 public class ProgressManager : MonoBehaviour
@@ -43,7 +46,7 @@ public class ProgressManager : MonoBehaviour
     {
         if (stage == current) return;
         current = stage;
-        // Debug.Log($"[Progress] Stage => {current}");
+
         OnStageChanged?.Invoke(current);
     }
 
@@ -51,14 +54,14 @@ public class ProgressManager : MonoBehaviour
     {
         string s = scene.name;
 
-        // CP1: al entrar a IntroHouse
+  
         if (s == "IntroHouse" && current < ProgressStage.CP1_IntroHouse)
         {
             SetStage(ProgressStage.CP1_IntroHouse);
             return;
         }
 
-        // CP2: al entrar a IntroDueño
+
         if (s == "IntroDueño" || s == "IntroDueno")
         {
             visitedIntroDueno = true;
@@ -67,7 +70,7 @@ public class ProgressManager : MonoBehaviour
             return;
         }
 
-        // CP3: volver a SampleScene luego de IntroDueño
+        
         if (s == "SampleScene" && visitedIntroDueno && current < ProgressStage.CP3_BackToSample)
         {
             SetStage(ProgressStage.CP3_BackToSample);

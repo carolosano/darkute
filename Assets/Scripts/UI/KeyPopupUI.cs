@@ -20,12 +20,10 @@ public class KeyPopupUI : MonoBehaviour
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-        // Dejar el objeto ACTIVO, pero invisible e in-interactivo
         canvasGroup.alpha = 0f;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
-        // NO desactivar el GameObject acá
-        // gameObject.SetActive(false);
+
     }
 
     private void OnEnable()
@@ -40,7 +38,7 @@ public class KeyPopupUI : MonoBehaviour
 
     private void HandleKeyObtained(PlayerInventory inv)
     {
-        canvasGroup.alpha = 1f; // aparece y se queda
+        canvasGroup.alpha = 1f; 
     }
 
 
@@ -53,7 +51,7 @@ public class KeyPopupUI : MonoBehaviour
 
     private IEnumerator ShowRoutine()
     {
-        // Asegurar visible
+
         canvasGroup.alpha = 1f;
 
         yield return new WaitForSeconds(showDuration);
@@ -65,8 +63,7 @@ public class KeyPopupUI : MonoBehaviour
         }
 
         canvasGroup.alpha = 0f;
-        // NO desactivar el GameObject, así seguimos suscritos al evento
-        // gameObject.SetActive(false);
+
     }
 }
 

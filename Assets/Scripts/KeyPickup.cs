@@ -23,7 +23,6 @@ public class KeyPickup : MonoBehaviour
             if (sfx != null) sfx.Play();
         }
 
-        // Destruir (o setActive false si querés animar primero)
         Destroy(gameObject);
     }
 }

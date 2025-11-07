@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI; // <-- para Image
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -12,6 +13,16 @@ public class InteractDoor : MonoBehaviour
     [Tooltip("Componente que desactiva el collider/sprite al abrir.")]
     [SerializeField] private LockedGate gateToOpen;
 
+    [Header("UI Prompt")]
+    [Tooltip("Imagen de UI (cartel 'Presioná E'). Arrastrá acá tu Image en el Canvas.")]
+    [SerializeField] private Image promptImage;
+    [Tooltip("Si está en true, solo muestra el cartel si el jugador ya tiene la llave.")]
+    [SerializeField] private bool showOnlyWhenHasKey = false;
+
+    [Tooltip("Fade opcional del prompt (CanvasGroup). Si no asignás, se usa enabled on/off.")]
+    [SerializeField] private CanvasGroup promptCanvasGroup;
+    [SerializeField] private float promptFadeSpeed = 10f; 
+
     [Header("Input (Legacy)")]
     [SerializeField] private KeyCode interactKey = KeyCode.E;
 
@@ -23,28 +34,30 @@ public class InteractDoor : MonoBehaviour
 
     [Header("Mensajes / Debug")]
     [SerializeField] private string needKeyMessage = "Necesitas una llave para abrir esta puerta.";
-    [SerializeField] private bool debugBypassKey = false; // para probar sin llave
+    [SerializeField] private bool debugBypassKey = false; 
 
     private bool playerInRange;
     private PlayerInventory playerInv;
     private bool used;
+    private float targetPromptAlpha = 0f; 
 
     private void Awake()
     {
         if (gateToOpen == null) gateToOpen = GetComponent<LockedGate>();
         if (triggerRef == null)
         {
-            // Buscar uno que sea trigger en este GO
             foreach (var c in GetComponents<Collider2D>())
-            {
                 if (c.isTrigger) { triggerRef = c; break; }
-            }
         }
         if (triggerRef == null)
             Debug.LogWarning("[InteractDoor] No se asignó triggerRef y no se encontró un Collider2D isTrigger en este GO.");
-#if ENABLE_INPUT_SYSTEM
-        if (interactAction != null) interactAction.action.Enable();
-#endif
+
+        #if ENABLE_INPUT_SYSTEM
+                if (interactAction != null) interactAction.action.Enable();
+        #endif
+
+
+        SetPromptVisible(false, instant:true);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -54,7 +67,7 @@ public class InteractDoor : MonoBehaviour
         {
             playerInRange = true;
             playerInv = other.GetComponent<PlayerInventory>();
-            // Debug.Log("[InteractDoor] Player en rango.");
+            RefreshPrompt();
         }
     }
 
@@ -65,20 +78,24 @@ public class InteractDoor : MonoBehaviour
         {
             playerInRange = false;
             playerInv = null;
-            // Debug.Log("[InteractDoor] Player fuera de rango.");
+            SetPromptVisible(false); 
         }
     }
 
     private void Update()
     {
-        if (!playerInRange || used) return;
+        if (!playerInRange || used) { UpdatePromptFade(); return; }
+
+        RefreshPrompt();
 
         bool pressed = Input.GetKeyDown(interactKey);
-#if ENABLE_INPUT_SYSTEM
-        if (!pressed && interactAction != null)
-            pressed = interactAction.action.WasPressedThisFrame();
-#endif
+        #if ENABLE_INPUT_SYSTEM
+                if (!pressed && interactAction != null)
+                    pressed = interactAction.action.WasPressedThisFrame();
+        #endif
         if (pressed) TryOpen();
+
+        UpdatePromptFade();
     }
 
     private void TryOpen()
@@ -117,11 +134,52 @@ public class InteractDoor : MonoBehaviour
         {
             Debug.LogWarning("[InteractDoor] gateToOpen no asignado. No se abrió nada.");
         }
+
+        
+        SetPromptVisible(false);
+    }
+
+    private void RefreshPrompt()
+    {
+        if (!playerInRange) { SetPromptVisible(false); return; }
+
+        bool canShow = true;
+        if (showOnlyWhenHasKey)
+            canShow = (playerInv != null && playerInv.HasKey);
+
+        SetPromptVisible(canShow);
+    }
+
+    private void SetPromptVisible(bool visible, bool instant = false)
+    {
+        if (promptImage == null && promptCanvasGroup == null) return;
+
+        if (promptCanvasGroup != null)
+        {
+            targetPromptAlpha = visible ? 1f : 0f;
+            if (instant) promptCanvasGroup.alpha = targetPromptAlpha;
+        }
+        else
+        {
+            
+            promptImage.enabled = visible;
+        }
+    }
+
+    private void UpdatePromptFade()
+    {
+        if (promptCanvasGroup == null) return;
+        if (Mathf.Approximately(promptCanvasGroup.alpha, targetPromptAlpha)) return;
+
+        promptCanvasGroup.alpha = Mathf.MoveTowards(
+            promptCanvasGroup.alpha,
+            targetPromptAlpha,
+            promptFadeSpeed * Time.deltaTime
+        );
     }
 
     private void OnDrawGizmosSelected()
     {
-        // Visual ayuda: caja alrededor del trigger
         if (triggerRef != null)
         {
             Gizmos.matrix = triggerRef.transform.localToWorldMatrix;

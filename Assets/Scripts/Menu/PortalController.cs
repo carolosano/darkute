@@ -31,7 +31,6 @@ public class PortalController : MonoBehaviour
 
         _startTime = Time.unscaledTime;
 
-        // 🧩 Agregamos este log para ver qué valor REAL tiene nextScene
         Debug.Log($"[Menu] nextScene en runtime = '{nextScene}'");
 
         if (videoPlayer != null)
@@ -39,6 +38,8 @@ public class PortalController : MonoBehaviour
             videoPlayer.loopPointReached += OnVideoFinished;
             videoPlayer.errorReceived += OnVideoError;
             videoPlayer.Play();
+            videoPlayer.SetDirectAudioVolume(0, 0.2f);
+
         }
         else
         {
@@ -95,7 +96,7 @@ public class PortalController : MonoBehaviour
 
         if (string.IsNullOrEmpty(nextScene))
         {
-            Debug.LogError("[Menu] ❌ No se configuró el nombre de la siguiente escena en el Inspector.");
+            Debug.LogError("[Menu]  No se configuró el nombre de la siguiente escena en el Inspector.");
             return;
         }
 

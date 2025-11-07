@@ -48,16 +48,14 @@ public class KeyDropManager : MonoBehaviour
     {
         if (e == null) return;
         aliveSet.Add(e);
-        // Debug.Log($"[KeyDropManager] Spawn -> vivos: {aliveSet.Count}");
+
     }
 
     private void HandleDied(Enemy e)
     {
-        // Importante: remover solo si estaba en el set (evita doble decremento)
+
         bool removed = (e != null) && aliveSet.Remove(e);
         if (removed) deathsCount++;
-
-        // Debug.Log($"[KeyDropManager] Muere -> vivos: {aliveSet.Count} | deaths: {deathsCount}");
 
         if (keySpawned) return;
         if (aliveSet.Count > 0) return;

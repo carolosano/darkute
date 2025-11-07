@@ -3,22 +3,17 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Vida (en corazones)")]
-    [SerializeField] private int maxHearts = 4;     // total de corazones
-    [SerializeField] private bool logDebug = true;  // logs útiles
+    [SerializeField] private int maxHearts = 4;     
+    [SerializeField] private bool logDebug = true;  
     [SerializeField] private CanvasGroup fadePanel;
 
-
-    // Vida actual en "medios corazones" (ej: 4 corazones = 8 medios)
     private int currentHalves;
 
-    // Referencia al HUD
     private HeartsUI heartsUI;
-
     private void Awake()
     {
         currentHalves = maxHearts * 2;
     }
-
     private void Start()
     {
        

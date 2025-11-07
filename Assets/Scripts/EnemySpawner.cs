@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private SimpleEnemyPool pool;

@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour
 {
-    // Eventos globales
+
     public static event Action<Enemy> OnAnyEnemySpawned;
     public static event Action<Enemy> OnAnyEnemyDied;
 
@@ -62,7 +62,7 @@ public class Enemy : MonoBehaviour
     private float lastInRangeAt = -999f;
     private float attackLockUntil = 0f;
 
-    private bool isDead; // guardia real de muerte
+    private bool isDead; 
     private Animator animator;
     private Transform player;
     private Collider2D col;
@@ -81,7 +81,7 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
-        // Reset estado
+
         isDead = false;
         vida   = vidaMax;
         state  = State.Patrolling;
@@ -100,7 +100,6 @@ public class Enemy : MonoBehaviour
         _nextAttackAllowed = 0f;
         hitStunned = false;
 
-        // IMPORTANTE: anunciar spawn UNA sola vez
         OnAnyEnemySpawned?.Invoke(this);
     }
 
@@ -394,18 +393,15 @@ public class Enemy : MonoBehaviour
 
     private void Muerte()
     {
-        if (isDead) return;          // <<< guardia: solo una vez
+        if (isDead) return;   
         isDead = true;
 
         state  = State.Dead;
         if (animator != null) animator.SetTrigger("Muerte");
         if (col != null) col.enabled = false;
         if (patrullar != null) patrullar.enabled = false;
-
-        // Avisar muerte UNA sola vez
         OnAnyEnemyDied?.Invoke(this);
 
-        // Drop individual opcional (NO usar para la llave final)
         DropPickup();
 
         StartCoroutine(DevolverAlPoolDespues(deathDeactivateDelay));
@@ -435,7 +431,7 @@ public class Enemy : MonoBehaviour
 
     private void DropPickup()
     {
-        // Importante: si querés que la llave SOLO salga del último enemigo, NO pongas la llave acá.
+
         if (pickupOnDeath == null) return;
         if (Random.value > dropChance) return;
 

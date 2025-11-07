@@ -4,8 +4,8 @@ using UnityEngine;
 public class LockedGate : MonoBehaviour
 {
     [Header("Apertura")]
-    [SerializeField] private bool autoOpenWhenKeyObtained = false; // ahora por defecto false para usar interacción
-    [SerializeField] private GameObject[] visualsToHide; // sprites/tiles que quieras ocultar
+    [SerializeField] private bool autoOpenWhenKeyObtained = false; 
+    [SerializeField] private GameObject[] visualsToHide; 
 
     private Collider2D col;
     private bool opened;
@@ -14,7 +14,7 @@ public class LockedGate : MonoBehaviour
     private void Awake()
     {
         col = GetComponent<Collider2D>();
-        col.isTrigger = false; // Sólido: bloquea el paso
+        col.isTrigger = false; 
     }
 
     private void OnEnable()

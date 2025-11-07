@@ -19,13 +19,13 @@ public class ProgressUI : MonoBehaviour
         if (targetImage == null)
             targetImage = GetComponent<Image>();
 
-        targetImage.enabled = false; // arranca oculto
+        targetImage.enabled = false;
     }
 
     private void OnEnable()
     {
         ProgressManager.OnStageChanged += HandleStageChanged;
-        // Si el manager ya existe y tiene estado, sincronizá:
+        
         if (ProgressManager.Instance != null)
             HandleStageChanged(ProgressManager.Instance.Current);
     }
